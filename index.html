@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Fresh Blendz | Atlanta’s Premium Black-Owned Barbershop</title>
+    <!-- SEO meta -->
+    <meta name="description" content="Best Barber Shop in Atlanta: Fresh Blendz – Black-owned, family-friendly, LGBTQ+ welcoming. Precision fades & community energy. Book online.">
+    <meta name="keywords" content="Best Barber Shop in Atlanta, Atlanta Fade Specialist, Black-Owned Barbershop Atlanta, Kid-Friendly Barber Atlanta, Affordable Haircut Atlanta">
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ----- RESET & VARIABLES ----- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --deep-black: #0B0B0B;
+            --rich-charcoal: #141414;
+            --warm-gold: #D4AF37;
+            --emerald: #0FA958;
+            --crisp-white: #F5F5F5;
+            --glass-bg: rgba(20, 20, 20, 0.7);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        body {
+            background-color: var(--deep-black);
+            color: var(--crisp-white);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 1px;
+            font-weight: 400;
+        }
+        a { text-decoration: none; color: inherit; }
+        /* ----- LOADING OVERLAY (PREMIUM ANIMATION) ----- */
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--deep-black);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+        .clipper-svg {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 1rem;
+        }
+        .clipper-svg path, .clipper-svg circle {
+            stroke: var(--warm-gold);
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .loading-text {
+            text-align: center;
+            overflow: hidden;
+        }
+        .loading-text h2 {
+            font-size: 3.5rem;
+            line-height: 1;
+            color: var(--crisp-white);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            background: linear-gradient(90deg, transparent 30%, var(--warm-gold) 50%, transparent 70%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 2s infinite;
+        }
+        .loading-text p {
+            color: var(--crisp-white);
+            font-size: 1.2rem;
+            opacity: 0.9;
+            letter-spacing: 4px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 150% 0; }
+            100% { background-position: -50% 0; }
+        }
+        /* ----- STICKY HEADER (blur, shrink) ----- */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 11, 11, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: padding 0.3s, background 0.3s;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .sticky-header.shrink {
+            padding: 0.3rem 5%;
+            background: rgba(11, 11, 11, 0.95);
+        }
+        .logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.2rem;
+            color: var(--warm-gold);
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+        .nav-links a {
+            margin: 0 1rem;
+            font-weight: 500;
+            position: relative;
+            cursor: pointer;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--warm-gold);
+            transition: 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .book-header-btn {
+            background: transparent;
+            border: 1.5px solid var(--warm-gold);
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .book-header-btn:hover {
+            background: var(--warm-gold);
+            color: var(--deep-black);
+            transform: scale(1.05);
+        }
+        /* ----- MAIN CONTENT (hidden until loader fades) ----- */
+        #main-content {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        /* ----- HERO ----- */
+        .hero {
+            min-height: 90vh;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=1200') center/cover fixed;
+            display: flex;
+            align-items: center;
+            padding: 0 8%;
+            position: relative;
+        }
+        .hero-content {
+            max-width: 700px;
+        }
+        .hero h1 {
+            font-size: clamp(3.5rem, 12vw, 6rem);
+            line-height: 1;
+            animation: fadeUp 1s ease-out;
+            position: relative;
+            display: inline-block;
+        }
+        .hero h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--warm-gold);
+            animation: goldUnderline 1.5s infinite alternate;
+        }
+        @keyframes goldUnderline {
+            0% { width: 60px; opacity: 0.7; }
+            100% { width: 160px; opacity: 1; }
+        }
+        .hero p {
+            font-size: 1.5rem;
+            margin: 1rem 0 2rem;
+            animation: fadeUp 1s 0.2s both;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.9rem 2.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background: var(--warm-gold);
+            color: var(--deep-black);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--warm-gold);
+        }
+        .btn-outline {
+            border: 2px solid var(--crisp-white);
+            background: transparent;
+            color: var(--crisp-white);
+        }
+        .btn-outline:hover {
+            border-color: var(--warm-gold);
+            color: var(--warm-gold);
+            transform: scale(1.05);
+        }
+        .btn-call {
+            background: transparent;
+            border: 2px solid var(--emerald);
+            color: var(--crisp-white);
+        }
+        .btn-call:hover i { transform: translateX(5px); }
+        .btn-call i { transition: 0.3s; }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        /* ----- SECTION GENERAL ----- */
+        .section {
+            padding: 5rem 5%;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .section-title {
+            font-size: 3.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--warm-gold);
+        }
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* ----- TRUST BADGES ----- */
+        .trust-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            justify-content: center;
+        }
+        .trust-item {
+            text-align: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(4px);
+            padding: 2rem;
+            border-radius: 20px;
+            min-width: 150px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .stars {
+            color: var(--warm-gold);
+            font-size: 1.8rem;
+            animation: starPop 1s;
+        }
+        @keyframes starPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .counter {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--warm-gold);
+        }
+        /* ----- SERVICES CARDS (glass) ----- */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.8rem;
+            margin-top: 2rem;
+        }
+        .service-card {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+        .service-card:hover {
+            border-color: var(--warm-gold);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+            transform: translateY(-8px);
+        }
+        .service-card h3 { font-size: 2rem; margin: 0.5rem 0; }
+        .service-card .btn-small {
+            margin-top: 1rem;
+            background: transparent;
+            border: 1px solid var(--warm-gold);
+            padding: 0.4rem 1.5rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .service-card .btn-small:hover {
+            background: var(--warm-gold);
+            color: #000;
+        }
+        /* ----- POPULAR TIMES (bar graph) ----- */
+        .graph-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-around;
+            align-items: flex-end;
+            min-height: 200px;
+            margin-top: 2rem;
+        }
+        .bar-wrapper {
+            text-align: center;
+            width: 60px;
+        }
+        .bar {
+            background: linear-gradient(to top, var(--warm-gold), #b38f40);
+            width: 40px;
+            border-radius: 12px 12px 4px 4px;
+            transition: height 0.3s;
+            position: relative;
+            cursor: default;
+            margin-bottom: 0.5rem;
+        }
+        .bar-wrapper:hover .bar { filter: brightness(1.2); }
+        .bar-wrapper .tooltip {
+            visibility: hidden;
+            background: var(--warm-gold);
+            color: black;
+            padding: 4px 8px;
+            border-radius: 20px;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .bar-wrapper:hover .tooltip { visibility: visible; }
+        /* ----- GALLERY MASONRY ----- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            aspect-ratio: 1/1;
+            background: #333;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .gallery-item:hover img { transform: scale(1.1); }
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-overlay span {
+            border: 2px solid var(--warm-gold);
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+        }
+        /* ----- REVIEW CAROUSEL ----- */
+        .carousel {
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            gap: 2rem;
+            animation: scrollReviews 25s linear infinite;
+            width: max-content;
+        }
+        .carousel:hover .carousel-track { animation-play-state: paused; }
+        .review-card {
+            background: var(--rich-charcoal);
+            padding: 2rem;
+            border-radius: 32px;
+            min-width: 300px;
+            border-left: 4px solid var(--warm-gold);
+        }
+        @keyframes scrollReviews {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        /* ----- BOOKING CARD (glow) ----- */
+        .booking-card {
+            background: var(--rich-charcoal);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2.5rem;
+            border-radius: 32px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            border-radius: 60px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+        }
+        .form-group input:focus { border-color: var(--warm-gold); outline: none; }
+        .btn-block {
+            width: 100%;
+            background: var(--warm-gold);
+            color: black;
+            padding: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 60px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .btn-block:active { transform: scale(0.98); background: #c6a229; }
+        /* ----- STICKY MOBILE BAR ----- */
+        .mobile-sticky-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--deep-black);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem;
+            border-top: 1px solid var(--warm-gold);
+            z-index: 99;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        @media (max-width: 768px) {
+            .mobile-sticky-bar { transform: translateY(0); }
+            .sticky-header .nav-links, .sticky-header .book-header-btn { display: none; }
+            .hero { background-attachment: scroll; }
+        }
+        .sticky-call, .sticky-book {
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .sticky-call { background: var(--emerald); color: white; }
+        .sticky-book { background: var(--warm-gold); color: black; }
+        /* shimmer effect every 10s on primary buttons */
+        .btn-primary.shimmer {
+            animation: btnShimmer 0.8s ease;
+        }
+        @keyframes btnShimmer {
+            0% { filter: brightness(1); }
+            30% { filter: brightness(1.3); box-shadow: 0 0 25px gold; }
+            100% { filter: brightness(1); }
+        }
+        /* cursor glow (subtle) */
+        * { cursor: none; } /* remove default */
+        .cursor-glow {
+            width: 30px; height: 30px;
+            background: radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s;
+            transform: translate(-50%, -50%);
+        }
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- PREMIUM LOADING ANIMATION -->
+    <div id="loading-overlay">
+        <svg class="clipper-svg" viewBox="0 0 100 100">
+            <path d="M20,30 L40,15 L70,15 L85,30 L75,65 L40,70 L20,60 Z" />
+            <path d="M70,32 L82,32 L82,48 L70,48" />
+            <circle cx="50" cy="48" r="4" />
+        </svg>
+        <div class="loading-text">
+            <h2>FRESH BLENDZ</h2>
+            <p>Atlanta’s Freshest Cuts.</p>
+        </div>
+    </div>
+
+    <!-- MAIN WEBSITE (hidden until loader fades) -->
+    <div id="main-content">
+        <header class="sticky-header" id="stickyHeader">
+            <div class="logo" id="logoHome"><i class="fas fa-cut" style="color: var(--warm-gold);"></i> FRESH BLENDZ</div>
+            <div class="nav-links">
+                <a data-scroll="home">Home</a>
+                <a data-scroll="services">Services</a>
+                <a data-scroll="gallery">Gallery</a>
+                <a data-scroll="contact">Contact</a>
+            </div>
+            <a class="book-header-btn" data-scroll="booking">BOOK NOW</a>
+        </header>
+
+        <!-- HERO (section home) -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>Stay Fresh.<br>Stay Sharp.</h1>
+                <p>Precision Fades. Family Vibes. Atlanta Energy.</p>
+                <div class="btn-group">
+                    <a class="btn btn-primary" id="bookHeroBtn" data-scroll="booking">Book Appointment <i class="fas fa-calendar-check"></i></a>
+                    <a href="tel:+14705534389" class="btn btn-call"><i class="fas fa-phone-alt"></i> Call Now</a>
+                    <a class="btn btn-outline" data-scroll="services">View Services <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRUST SECTION -->
+        <section class="section fade-up" id="trust">
+            <div class="trust-grid">
+                <div class="trust-item"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> 4.6★</div><div class="counter" id="reviewCounter">154</div> reviews</div>
+                <div class="trust-item"><i class="fas fa-fist-raised" style="font-size:3rem; color:gold;"></i><br><strong>Black-Owned</strong></div>
+                <div class="trust-item"><i class="fas fa-rainbow" style="font-size:3rem; color:gold;"></i><br><strong>LGBTQ+ Friendly</strong></div>
+                <div class="trust-item"><i class="fas fa-child" style="font-size:3rem; color:gold;"></i><br><strong>Kid-Friendly</strong></div>
+            </div>
+        </section>
+
+        <!-- SERVICES SECTION -->
+        <section class="section fade-up" id="services">
+            <h2 class="section-title">Signature Cuts</h2>
+            <div class="services-grid">
+                <div class="service-card"><h3>Skin Fade</h3><p>razor sharp</p><a class="btn-small" data-scroll="booking">Book This Cut</a></div>
+                <div class="service-card"><h3>Taper Fade</h3><p>clean blend</p><a class="btn-small" data-scroll="booking">Book This Cut</a></div>
+                <div class="service-card"><h3>Kids Cut</h3><p>fun & fast</p><a class="btn-small" data-scroll="booking">Book This Cut</a></div>
+                <div class="service-card"><h3>Beard Trim</h3><p>edge up</p><a class="btn-small" data-scroll="booking">Book This Cut</a></div>
+                <div class="service-card"><h3>Shape-Up</h3><p>crisp lines</p><a class="btn-small" data-scroll="booking">Book This Cut</a></div>
+                <div class="service-card"><h3>Full Grooming</h3><p>the royal</p><a class="btn-small" data-scroll="booking">Book This Cut</a></div>
+            </div>
+        </section>
+
+        <!-- POPULAR TIMES -->
+        <section class="section fade-up">
+            <h2 class="section-title">Peak Hours 📈</h2>
+            <div class="graph-container">
+                <div class="bar-wrapper"><div class="bar" style="height:80px;"><span class="tooltip">moderate</span></div><span>Mon</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height:100px;"><span class="tooltip">busy</span></div><span>Tue</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height:120px;"><span class="tooltip">very busy</span></div><span>Wed</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height:140px;"><span class="tooltip">packed</span></div><span>Thu</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height:180px; background:linear-gradient(to top, #D4AF37, #f5d742);"><span class="tooltip">🔥 SATURDAY 🔥</span></div><span>Fri</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height:200px; background:var(--warm-gold);"><span class="tooltip">busiest! book ahead</span></div><span>Sat</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height:60px;"><span class="tooltip">quiet</span></div><span>Sun</span></div>
+            </div>
+        </section>
+
+        <!-- GALLERY SECTION -->
+        <section class="section fade-up" id="gallery">
+            <h2 class="section-title">Fresh Cuts Gallery</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1621605815951-6cf9d2c7e4b0?w=300" alt="fade"><div class="gallery-overlay"><span>View Cut</span></div></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1596704017254-9755b64b5c60?w=300" alt="kids cut"><div class="gallery-overlay"><span>View Cut</span></div></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1532710093739-9470acff878f?w=300" alt="shape up"><div class="gallery-overlay"><span>View Cut</span></div></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1593702275687-f178b4f62c64?w=300" alt="beard"><div class="gallery-overlay"><span>View Cut</span></div></div>
+            </div>
+        </section>
+
+        <!-- REVIEWS CAROUSEL -->
+        <section class="section fade-up">
+            <h2 class="section-title">Clients Talk</h2>
+            <div class="carousel">
+                <div class="carousel-track">
+                    <div class="review-card">⭐️⭐️⭐️⭐️⭐️ "Amazing experience. Best fade in Atlanta."</div>
+                    <div class="review-card">⭐️⭐️⭐️⭐️⭐️ "Kid friendly and family conversations."</div>
+                    <div class="review-card">⭐️⭐️⭐️⭐️⭐️ "Treated me like I came all the time."</div>
+                    <div class="review-card">⭐️⭐️⭐️⭐️ "Cut in under 30 minutes."</div>
+                    <div class="review-card">⭐️⭐️⭐️⭐️⭐️ "Black-owned excellence."</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BOOKING SECTION -->
+        <section class="section fade-up" id="booking">
+            <h2 class="section-title">Secure Your Spot</h2>
+            <div class="booking-card">
+                <form id="bookingForm" onsubmit="return false;">
+                    <div class="form-group"><input type="text" placeholder="Full Name" required id="bookingName"></div>
+                    <div class="form-group"><input type="tel" placeholder="Phone Number" required id="bookingPhone"></div>
+                    <div class="form-group"><select id="bookingBarber"><option value="">Select Barber (optional)</option><option>Mike</option><option>Dre</option></select></div>
+                    <div class="form-group"><select required id="bookingService"><option value="">Select Service</option><option>Skin Fade</option><option>Taper Fade</option><option>Kids Cut</option></select></div>
+                    <div class="form-group"><input type="date" required id="bookingDate"></div>
+                    <button type="button" class="btn-block" id="confirmBookBtn">Confirm Appointment</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- MAP & CONTACT (id=contact) -->
+        <section class="section fade-up" id="contact">
+            <h2 class="section-title">Find Us</h2>
+            <div style="display:flex; flex-wrap:wrap; gap:2rem;">
+                <div style="flex:1; min-width:250px;"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3319.6431984733243!2d-84.39871308441095!3d33.76787533678716!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f5045d3093a4c7%3A0x2f5c1a6b1e9b9c7a!2sAtlanta%2C%20GA!5e0!3m2!1sen!2sus!4v1620000000000" width="100%" height="250" style="border:0; border-radius:24px;" allowfullscreen="" loading="lazy"></iframe></div>
+                <div style="flex:1;"><h3>Fresh Blendz Barbershop</h3><p><i class="fas fa-map-pin gold"></i> 123 Auburn Ave, Atlanta, GA</p><p><a href="tel:+14705534389" class="btn-call" style="padding:0.5rem 2rem;"><i class="fas fa-phone-alt"></i> +1 470-553-4389</a></p><div class="social-preview"><i class="fab fa-instagram fa-2x" style="margin:0 10px; cursor:pointer;" onclick="alert('Instagram link (demo)')"></i><i class="fab fa-facebook fa-2x" style="cursor:pointer;" onclick="alert('Facebook link (demo)')"></i></div></div>
+            </div>
+        </section>
+
+        <!-- MOBILE STICKY BAR -->
+        <div class="mobile-sticky-bar">
+            <a href="tel:+14705534389" class="sticky-call"><i class="fas fa-phone-alt"></i> Call</a>
+            <a class="sticky-book" data-scroll="booking"><i class="fas fa-calendar-check"></i> Book</a>
+        </div>
+    </div>
+
+    <!-- Cursor glow -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <script>
+        (function(){
+            // LOADING OVERLAY + CLIPPER DRAW
+            const overlay = document.getElementById('loading-overlay');
+            const main = document.getElementById('main-content');
+            const paths = document.querySelectorAll('.clipper-svg path, .clipper-svg circle');
+
+            // set stroke dash for drawing effect
+            paths.forEach(path => {
+                const len = path.getTotalLength();
+                path.style.strokeDasharray = len;
+                path.style.strokeDashoffset = len;
+                path.style.transition = 'stroke-dashoffset 1.8s ease-in-out';
+            });
+
+            // trigger draw after tiny delay
+            setTimeout(() => {
+                paths.forEach(p => p.style.strokeDashoffset = 0);
+            }, 100);
+
+            // fade out overlay after 3 sec
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    main.style.opacity = '1';
+                }, 800);
+            }, 2800);
+
+            // header shrink
+            const header = document.getElementById('stickyHeader');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) header.classList.add('shrink');
+                else header.classList.remove('shrink');
+            });
+
+            // Fade-up scroll observer
+            const faders = document.querySelectorAll('.fade-up');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) e.target.classList.add('visible');
+                });
+            }, { threshold: 0.2 });
+            faders.forEach(f => observer.observe(f));
+
+            // shimmer effect on primary CTA every 10s
+            const primaryBtn = document.getElementById('bookHeroBtn');
+            setInterval(() => {
+                if (primaryBtn) {
+                    primaryBtn.classList.add('shimmer');
+                    setTimeout(() => primaryBtn.classList.remove('shimmer'), 900);
+                }
+            }, 10000);
+
+            // counter animation for reviews
+            const counterSpan = document.getElementById('reviewCounter');
+            let count = 0;
+            const target = 154;
+            const updateCounter = () => {
+                if (count < target) {
+                    count += Math.ceil((target - count) / 20);
+                    counterSpan.innerText = count;
+                    requestAnimationFrame(updateCounter);
+                } else counterSpan.innerText = target;
+            };
+            const trustObserver = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { updateCounter(); trustObserver.disconnect(); }
+                });
+            }, { threshold: 0.5 });
+            trustObserver.observe(document.querySelector('.trust-grid'));
+
+            // cursor glow
+            const cursor = document.getElementById('cursorGlow');
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            // BUTTON FUNCTIONALITY =================================
+            // Smooth scroll to elements with data-scroll attribute
+            document.querySelectorAll('[data-scroll]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-scroll');
+                    const targetEl = document.getElementById(targetId);
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Logo scroll to top
+            document.getElementById('logoHome').addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Call buttons are already <a href="tel:"> so they work natively
+
+            // Confirm Appointment button (demo)
+            document.getElementById('confirmBookBtn').addEventListener('click', function() {
+                const name = document.getElementById('bookingName').value.trim();
+                if (!name) {
+                    alert('Please enter your name.');
+                    return;
+                }
+                // Vibrate if supported
+                if (navigator.vibrate) navigator.vibrate(30);
+                alert(`Thanks ${name}! (Demo) Your appointment request has been sent. We'll call to confirm.`);
+                // Optionally reset form
+                document.getElementById('bookingForm').reset();
+            });
+
+            // Additional: "View Cut" gallery items (just demo)
+            document.querySelectorAll('.gallery-overlay').forEach(item => {
+                item.addEventListener('click', () => alert('Gallery image preview (demo)'));
+            });
+
+            // ripple click effect (optional)
+            document.querySelectorAll('.btn, .btn-small, .btn-block, .sticky-book, .sticky-call').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if (this.classList.contains('sticky-call') || this.tagName === 'A' && this.getAttribute('href')?.startsWith('tel:')) return; // let default happen
+                    let ripple = document.createElement('span');
+                    ripple.style.position = 'absolute';
+                    ripple.style.background = 'rgba(255,255,255,0.4)';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.width = ripple.style.height = '10px';
+                    ripple.style.transform = 'scale(0)';
+                    ripple.style.transition = 'transform 0.4s, opacity 0.4s';
+                    const rect = this.getBoundingClientRect();
+                    ripple.style.left = (e.clientX - rect.left) + 'px';
+                    ripple.style.top = (e.clientY - rect.top) + 'px';
+                    this.style.position = 'relative';
+                    this.appendChild(ripple);
+                    setTimeout(() => { ripple.style.transform = 'scale(20)'; ripple.style.opacity = 0; }, 10);
+                    setTimeout(() => ripple.remove(), 400);
+                });
+            });
+        })();
+    </script>
+    <!-- Fallback cursor normal on mobile -->
+    <style>@media (max-width:768px) { * { cursor: auto; } .cursor-glow { display: none; } }</style>
+</body>
+</html>
